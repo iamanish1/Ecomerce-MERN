@@ -7,8 +7,13 @@ const userSchema =new mongooes.Schema(
         unique : true , 
         required : true , 
       },
-      password : string 
+      password : String 
     },
-    {timestamps : true
+    {
+        timestamps : true
     } 
 )
+
+const userModel = mongooes.model("user",userSchema)
+
+module.exports = userModel 

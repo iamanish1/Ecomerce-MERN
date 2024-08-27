@@ -2,7 +2,10 @@ import { useState } from 'react';
 import loginicon from '../assest/signin.gif'
 import { FaEye } from "react-icons/fa";
 import { GoEyeClosed } from "react-icons/go";
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import SumaryApi from '../common';
+import axios from 'axios'
+import { toast } from 'react-toastify';
 
 const Singup = ()=>{
     const [showPassword,setShowPassword] = useState(false)
@@ -15,6 +18,8 @@ const Singup = ()=>{
         profilePic : "", 
         
     }) 
+    const navigate = useNavigate()
+
     const handelOnChange = (e)=>{
         const{name,value} = e.target
         setdata((preve)=>{
@@ -26,16 +31,49 @@ const Singup = ()=>{
     }
   console.log("data login",data); 
 
-  const handelSumbit = (e)=>{
-  e.preventDefault()
+  const handleSumbit = async(e)=>{
+  e.preventDefault() 
+
+  
+
+  if(data.Password === data.ConfirmPassword){
+    navigate("/login")
+    console.log("data:",SumaryApi.Singup.url)
+    
+    e.preventDefault();
+      
+    axios
+      .post(`http://localhost:3000/api/signup` , {
+        name: data.name,
+        email: data.email,
+        password: data.Password,
+      },
+      toast.success("Account create succesfully")
+    )
+      .then((res) => {
+        if (res.data.status === 200) {
+          alert("data send ....")
+         
   }
+   })}
+else {
+    toast.error("please enter Same Password")
+    }
+
+}
+
+
+
+  
     const setPassword = ()=>setShowPassword(
         (preve)=>!preve
     )
     const setConfirmPassword= ()=>setConfirmShowPassword(
         (preve)=>!preve
     )
-    return (
+
+
+  return (
         <>
        <section id="Singup">
         <div className=" container mx-auto p-4 ">
@@ -45,7 +83,7 @@ const Singup = ()=>{
                     <img src={loginicon} alt="login icon" className=' rounded-full'/>
                   </div>
                  
-                 <form className='pt-6' onSubmit={handelSumbit}>
+                 <form className='pt-6' onSubmit={handleSumbit}>
                      
                  <div>
                         <label htmlFor="Name">Name :</label>
@@ -63,7 +101,7 @@ const Singup = ()=>{
                     </div>
 
                     <div>
-                        <label htmlFor="Email">Email :</label>
+                        <label htmlFor="email">Email :</label>
                         <div className="bg-slate-100 p-2 ">
                         <input type="Email"
                         placeholder='enter your email @gamil.com..' 
@@ -126,6 +164,8 @@ const Singup = ()=>{
        </section>
         </>
     )
+
+  
 };
 
 export default Singup ; 

@@ -2,9 +2,25 @@ import { RiSearchLine } from "react-icons/ri";
 import { FaRegUserCircle } from "react-icons/fa";
 import { FaShoppingCart } from "react-icons/fa";
 import { Link } from "react-router-dom";
+import SumaryApi from "../common";
+import { toast } from "react-toastify";
 
 
 const Header = ()=>{
+    const handelLogout = async()=>{
+       const fetchdata = await fetch(SumaryApi.userLogout.url,{
+            
+                   method : SumaryApi.userLogout.method,
+                   credentials : "include"       
+       }) 
+       const data = await fetchdata.json()
+       if(data.success){
+        toast.success(data.message)
+       }
+       if(data.error){
+        toast.error(data.message)
+       }
+    }
     return (
         <>
         <header className="h-16 shadow-md bg-white">
@@ -42,10 +58,22 @@ const Header = ()=>{
                 </div>
 
                 <div>
-                    <Link to={'/login'}>
-                    <button className="px-3 py-1 rounded-full text-white bg-red-600 
-                     hover:bg-red-700">Login</button>
-                     </Link>
+                    {
+                        user ?._id ? (
+                            <button>
+                                Logout
+                            </button>
+                        )
+                        :
+                        (
+                        <Link to={'/login'}>
+                        <button className="px-3 py-1 rounded-full text-white bg-red-600 
+                         hover:bg-red-700">Login</button>
+                         </Link>
+                        )
+                 
+                    }
+            
                 </div>
             </div>
         </div>

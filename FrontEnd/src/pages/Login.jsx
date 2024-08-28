@@ -2,7 +2,9 @@ import { useState } from 'react';
 import loginicon from '../assest/signin.gif'
 import { FaEye } from "react-icons/fa";
 import { GoEyeClosed } from "react-icons/go";
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import SumaryApi from '../common';
+import { toast } from 'react-toastify';
 
 
 const Login = ()=>{
@@ -11,6 +13,7 @@ const Login = ()=>{
         email : "",
         Password : "",
     }) 
+    const navigate = useNavigate() 
     const handelOnChange = (e)=>{
         const{name,value} = e.target
         setdata((preve)=>{
@@ -22,8 +25,24 @@ const Login = ()=>{
     }
   console.log("data login",data); 
 
-  const handelSumbit = (e)=>{
+  const handelSumbit = async(e)=>{
   e.preventDefault()
+  const dataResponse = await fetch (SumaryApi.Singin.url,{
+    method : SumaryApi.Singin.method,
+    credentials : 'include',
+    headers : {
+        "content-type" : "application/json"
+    },
+    body : JSON.stringify(data)
+  })
+  const dataApi = await dataResponse.json()
+  if(dataApi.success){
+    toast.success(dataApi.message)
+    navigate('/')
+  }
+  if(dataApi.error){
+    toast.error(dataApi.message)
+  }
   }
     const setPassword = ()=>setShowPassword(
         (preve)=>!preve
